@@ -1,8 +1,8 @@
 ---
 title: "BSMM-lab-2"
 subtitle: "BSMM 8740 Fall 2023"
-author: "Add your name here"
-date: "Add the date here"
+author: "Aman"
+date: "September 25, 2023"
 format: html
 editor: visual
 self-contained: true
@@ -11,6 +11,24 @@ self-contained: true
 ## Setup
 
 Load packages and data:
+
+```{r}
+install.packages("magrittr")
+install.packages("tidyverse")
+install.packages("tidymodels")
+install.packages("gt")
+install.packages("gtExtras")
+install.packages("DataExplorer")
+```
+
+```{r}
+library(magrittr)     # the pipe
+library(tidyverse)    # for data wrangling + visualization
+library(tidymodels)   # for modeling
+library(gt)           # for making display tables
+library(gtExtras)     # helper functions for beautiful tables
+library(DataExplorer) #
+```
 
 ```{r load-pkg-data}
 #| message: false
@@ -23,6 +41,54 @@ the_tate_artists <- readr::read_csv("data/the-tate-artists.csv")
 ### Exercise 1
 
 The `the_tate` dataset has \_\_\_ unique artists who worked from \_\_\_ to \_\_\_. The works were acquired between the years \_\_\_ and \_\_\_.
+
+```{r}
+the_tate_area <- the_tate[!is.na(the_tate$width) & !is.na(the_tate$height),]
+area <- the_tate_area$width * the_tate_area$height
+the_tate_area <- cbind(the_tate_area, area)
+the_tate_area <- the_tate_area[order(the_tate_area$area),]
+```
+
+```{r}
+library(dplyr)
+the_tate_by_artist <- the_tate %>%
+  group_by(artist) %>%
+  summarize(count = n())
+the_tate_by_artist <- the_tate_by_artist[order(-the_tate_by_artist$count),]
+head(the_tate_by_artist)
+```
+
+```{r}
+summarize(the_tate)
+```
+
+```{)}
+```
+
+```{r}
+the_tate %>% summary()
+```
+
+```{r}
+summarize(the_tate)%>%
+```
+
+```{r}
+library(dplyr)
+library(DataExplorer)
+
+general_observations <-the_tate %>%
+  summarize(
+    UniqueArtists = n_distinct(artist),
+    PeriodRepresented = paste(min(date),"to", max(date)),
+    acquisitionYear = paste(min(acquisitionYear), "to", max(acquisitionYear))
+  )
+
+print(general_observations)
+
+introduce(tate_collection)
+plot_missing(tate_collection)
+```
 
 ### Exercise 2
 
@@ -47,6 +113,10 @@ The artist with the greatest number of works in the Tate collection represent \_
 ### Exercise 5
 
 There are \_\_ duplicate artist-title pairs
+
+```{r}
+dplyr:: distinct(artist)
+```
 
 ### Exercise 6
 
